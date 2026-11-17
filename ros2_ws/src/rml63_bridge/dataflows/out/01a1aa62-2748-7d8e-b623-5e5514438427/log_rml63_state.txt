@@ -1,0 +1,2 @@
+[rml63_state] input_mode=mock
+[rml63_state] stopped (frames=437)

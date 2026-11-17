@@ -1,0 +1,50 @@
+# HoloLens 2 离线回放 → 虚拟目标预览转换（真实 Dora runtime，仅离线）
+#
+# 数据流:
+#   hololens_replay ──records──> hololens_target_converter ──converted──> hololens_saver
+#
+# 约束:
+#   - 不监听实时 UDP、不启动 ROS2、不连接头显/机械臂/相机、不发送控制指令；
+#   - preview_target 是未标定的虚拟位置预览（Unity tracking space），
+#     不是 RML63 基坐标，不是 LeRobot action，不生成训练数据；
+#   - 转换节点复用 scripts/hololens_target_converter.py 的状态机，
+#     间隔判定使用记录内原始时间（_receiver.monotonic_s 优先），
+#     回放速度不影响转换结果；
+#   - 回放结束发送 {"_eos": true} 明确通知下游；保存节点关闭文件并写
+#     完成标记后退出，dora.run 在全部节点退出后自行返回。
+#
+# 运行（由 scripts/hololens_replay_dora.py 生成实际路径后执行，勿手动运行）:
+#   python3 scripts/hololens_replay_dora.py
+
+nodes:
+  - id: hololens_replay
+    path: hololens_replay_dora_node.py
+    inputs:
+      start: dora/timer/millis/500
+    outputs:
+      - records
+    env:
+      PYTHONPATH: PYTHONPATH_REWRITTEN_BY_RUNNER
+      RML63_HL_REPLAY_INPUT: INPUT_REWRITTEN_BY_RUNNER
+      RML63_HL_CHUNK_SIZE: "10000"
+
+  - id: hololens_target_converter
+    path: hololens_target_dora_node.py
+    inputs:
+      records: hololens_replay/records
+    outputs:
+      - converted
+    env:
+      PYTHONPATH: PYTHONPATH_REWRITTEN_BY_RUNNER
+      RML63_HL_SCALE: "0.2"
+      RML63_HL_INTERVAL_THRESHOLD: "0.2"
+
+  - id: hololens_saver
+    path: hololens_saver_dora_node.py
+    inputs:
+      converted: hololens_target_converter/converted
+    outputs: []
+    env:
+      PYTHONPATH: PYTHONPATH_REWRITTEN_BY_RUNNER
+      RML63_HL_OUTPUT: OUTPUT_REWRITTEN_BY_RUNNER
+      RML63_HL_DONE_MARKER: MARKER_REWRITTEN_BY_RUNNER

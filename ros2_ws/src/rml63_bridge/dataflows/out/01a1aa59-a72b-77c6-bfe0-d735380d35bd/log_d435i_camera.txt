@@ -1,0 +1,4 @@
+{"timestamp":"2026-11-05T06:16:05.284540Z","level":"INFO","fields":{"message":"","name":"MeterProvider.GlobalSet","message":"Global meter provider is set. Meters can now be created using global::meter() or global::meter_with_scope()."},"target":"opentelemetry"}
+[d435i_camera] input_mode=mock
+[d435i_camera] stopped (frames=435)
+{"timestamp":"2026-11-05T06:16:21.656361Z","level":"WARN","fields":{"message":"timeout while waiting for drop tokens; closing 3 shared memory regions that might not yet been mapped."},"target":"dora_node_api::node"}

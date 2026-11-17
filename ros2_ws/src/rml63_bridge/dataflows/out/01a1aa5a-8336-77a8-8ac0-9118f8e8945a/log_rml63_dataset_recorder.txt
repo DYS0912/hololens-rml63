@@ -1,0 +1,3 @@
+{"timestamp":"2026-11-05T06:17:01.609519Z","level":"INFO","fields":{"message":"","name":"MeterProvider.GlobalSet","message":"Global meter provider is set. Meters can now be created using global::meter() or global::meter_with_scope()."},"target":"opentelemetry"}
+[recorder] task=rebar_tying root=/tmp/rml63_dora_stage
+[recorder] stopped: {"status": "stopped", "dataset_root": "/tmp/rml63_dora_stage", "output_root": "/tmp/rml63_dora_lerobot", "episodes_committed": 0, "frames_written": 0, "action_frames": 0, "ticks_processed": 102, "skipped": {"frame_invalid": 98}, "errors": ["当前数据集缺少训练动作，不能用于 ACT 训练；拒绝生成训练数据（不伪造 action）。 离线 staging 数据保留在 /tmp/rml63_dora_stage"]}

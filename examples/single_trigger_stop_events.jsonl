@@ -1,0 +1,5 @@
+{"t": 16.118764543999987, "kind": "gesture_triggered", "value": {"session": "8e7838e9eb1c439fb1c76de31abcdc23", "sequence": 7522}}
+{"t": 16.120914672000026, "kind": "motion_sent", "value": {"start": [-0.6758379936218262, 0.0750960037112236, 0.12768299877643585], "delta_base_m": [0, 0, 0.005], "speed_percent": 1}}
+{"t": 16.27403428399998, "kind": "stop_requested", "value": "发送运动后150ms"}
+{"t": 16.724148558000024, "kind": "stop_result", "value": true}
+{"t": 20.21286028199995, "kind": "movel_result", "value": false}

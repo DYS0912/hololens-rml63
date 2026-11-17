@@ -1,0 +1,12 @@
+{"timestamp":"2026-11-05T06:16:05.284731Z","level":"INFO","fields":{"message":"","name":"MeterProvider.GlobalSet","message":"Global meter provider is set. Meters can now be created using global::meter() or global::meter_with_scope()."},"target":"opentelemetry"}
+[rml63_state] input_mode=mock
+Traceback (most recent call last):
+  File "/home/dys/ros2_rm_robot-humble1.6.0/rml63_bridge/rml63_bridge/dora_nodes/rml63_state_dora_node.py", line 254, in <module>
+    raise SystemExit(main())
+  File "/home/dys/ros2_rm_robot-humble1.6.0/rml63_bridge/rml63_bridge/dora_nodes/rml63_state_dora_node.py", line 241, in main
+    value = value_to_py(event.get("value"))
+  File "/home/dys/ros2_rm_robot-humble1.6.0/rml63_bridge/rml63_bridge/dora_nodes/dora_compat.py", line 42, in value_to_py
+    arr = value.to_numpy()
+  File "pyarrow/array.pxi", line 1832, in pyarrow.lib.Array.to_numpy
+  File "pyarrow/error.pxi", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Needed to copy 1 chunks with 0 nulls, but zero_copy_only was True

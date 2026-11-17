@@ -1,0 +1,2 @@
+[d435i_camera] input_mode=mock
+[d435i_camera] stopped (frames=435)

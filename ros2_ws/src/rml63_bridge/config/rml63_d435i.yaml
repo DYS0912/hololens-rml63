@@ -1,0 +1,24 @@
+# RML63 + D435i 准备配置（仅配置与文档用途，不驱动任何硬件）
+#
+# 注意:
+# 1. D435i 话题名称和帧率需要连接相机后实测（当前未安装驱动、未连接相机，
+#    以下均为 realsense2_camera 常见默认值，属预留接口）；
+# 2. 官方 arm_type 使用 "RML_63"（对应官方 rm_driver/config/rm_63_config.yaml），
+#    不要写成 RM63 或 RML63；
+# 3. 当前没有真实 action；当前不启动控制。
+
+robot_type: rml63
+arm_type: RML_63
+dof: 6
+state_dim: 25
+action_dim: 6
+joint_position_unit: rad
+joint_velocity_unit: rad/s
+joint_current_unit: mA
+camera_type: d435i
+camera_color_topic: /camera/camera/color/image_raw
+camera_depth_topic: /camera/camera/depth/image_rect_raw
+camera_aligned_depth_topic: /camera/camera/aligned_depth_to_color/image_raw
+camera_gyro_topic: /camera/camera/gyro/sample
+camera_accel_topic: /camera/camera/accel/sample
+camera_imu_topic: /camera/camera/imu

@@ -1,0 +1,2 @@
+[mock_action] mode=mock（模拟 action 仅用于数据格式验证，不代表真实示范动作，不用于研究结论。）
+[mock_action] stopped (actions=436)

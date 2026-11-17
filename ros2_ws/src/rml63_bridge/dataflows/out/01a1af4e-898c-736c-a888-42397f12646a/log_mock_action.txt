@@ -1,0 +1,3 @@
+[mock_action] mode=mock（模拟 action 仅用于数据格式验证，不代表真实示范动作，不用于研究结论。）
+{"timestamp":"2026-11-06T05:22:02.916195Z","level":"INFO","fields":{"message":"","name":"MeterProvider.GlobalSet","message":"Global meter provider is set. Meters can now be created using global::meter() or global::meter_with_scope()."},"target":"opentelemetry"}
+[mock_action] stopped (actions=435)

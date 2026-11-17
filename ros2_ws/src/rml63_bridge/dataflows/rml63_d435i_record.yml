@@ -1,0 +1,132 @@
+# RML63 + D435i 数据集采集 dataflow（Dora）
+#
+# 数据流（当前离线 mock 模式；未来 ROS2 relay 接入见节点内注释）:
+#
+#   rml63_state (mock) ──────┐
+#   d435i_camera (mock) ─────┼──→ rml63_dataset_recorder ──→ LeRobot 0.6.2 Parquet
+#   mock_action (离线模拟) ───┘
+#
+# 约束:
+#   - 当前不启动 rm_driver / realsense2_camera / 任何 ROS2 节点；
+#   - 不连接 RML63 / D435i / 绑扎枪，不发送任何控制指令；
+#   - mock action 仅用于数据格式验证，不得用于训练 ACT；
+#   - 最终数据格式为 LeRobot 0.6.2（meta/ + data/ + images/ + tasks.parquet
+#     + episodes parquet），不使用旧版 LeRobot 0.1 格式；
+#   - 图像只以数值数组经 Dora 通道传输，绝不进入 JSON 字符串。
+#
+# 运行（dora 安装后）:
+#   dora start rml63_d435i_record.yml
+#   # episode 控制: echo save|next|discard|stop > $RML63_DORA_CONTROL_FILE
+#   dora destroy
+# 离线验证（无需 dora）:
+#   python3 -m rml63_bridge.dora_nodes.simulate_dataflow --count 12
+
+nodes:
+  - id: rml63_state
+    path: /home/dys/rml63_robot_project/ros2_ws/src/rml63_bridge/rml63_bridge/dora_nodes/rml63_state_dora_node.py
+    inputs:
+      tick: dora/timer/millis/33
+      # 未来 ROS2 relay 输入（STATE_INPUT_MODE=ros2 时启用）:
+      # joint_states: /joint_states
+      # udp_joint_speed: /rm_driver/udp_joint_speed
+      # udp_joint_current: /rm_driver/udp_joint_current
+      # udp_arm_position: /rm_driver/udp_arm_position
+      # udp_joint_en_flag: /rm_driver/udp_joint_en_flag
+      # udp_rm_err: /rm_driver/udp_rm_err
+      # udp_joint_error_code: /rm_driver/udp_joint_error_code
+      # udp_arm_current_status: /rm_driver/udp_arm_current_status
+    outputs:
+      - state
+      - tcp_pose
+      - joint_current
+      - joint_velocity
+      - status
+      - timestamp
+      - valid
+    env:
+      PYTHONPATH: /home/dys/rml63_robot_project/ros2_ws/src/rml63_bridge
+      STATE_INPUT_MODE: mock
+      STATE_MOCK_FPS: "30"
+      STATE_MOCK_INVALID_EVERY: "5"
+      STATE_STALE_TIMEOUT: "0.1"
+      STATE_REQUIRE_ALL_ENABLED: "true"
+
+  - id: d435i_camera
+    path: /home/dys/rml63_robot_project/ros2_ws/src/rml63_bridge/rml63_bridge/dora_nodes/d435i_camera_dora_node.py
+    inputs:
+      tick: dora/timer/millis/33
+      # 未来 ROS2 relay 输入（CAMERA_INPUT_MODE=ros2 时启用）:
+      # color: /camera/camera/color/image_raw
+      # depth: /camera/camera/depth/image_rect_raw
+      # aligned_depth: /camera/camera/aligned_depth_to_color/image_raw
+      # gyro: /camera/camera/gyro/sample
+      # accel: /camera/camera/accel/sample
+      # imu: /camera/camera/imu
+    outputs:
+      - rgb
+      - depth
+      - aligned_depth
+      - gyro
+      - accel
+      - camera_timestamp
+      - frame_id
+      - valid
+    env:
+      PYTHONPATH: /home/dys/rml63_robot_project/ros2_ws/src/rml63_bridge
+      CAMERA_INPUT_MODE: mock
+      CAMERA_MOCK_FPS: "30"
+      CAMERA_MOCK_INVALID_EVERY: "5"
+      CAMERA_NAME: d435i
+      CAMERA_REQUIRE_IMU: "false"
+
+  - id: mock_action
+    # 离线模拟 action 源（仅数据格式验证，不用于训练）。
+    # 接真机后删除本节点，接入真实 action 源（拖拽示教/脚本/绑扎枪遥操作）。
+    path: /home/dys/rml63_robot_project/ros2_ws/src/rml63_bridge/rml63_bridge/dora_nodes/mock_action_dora_node.py
+    inputs:
+      tick: dora/timer/millis/33
+    outputs:
+      - action
+    env:
+      PYTHONPATH: /home/dys/rml63_robot_project/ros2_ws/src/rml63_bridge
+      ACTION_MODE: mock
+      ACTION_DIM: "6"
+
+  - id: rml63_dataset_recorder
+    path: /home/dys/rml63_robot_project/ros2_ws/src/rml63_bridge/rml63_bridge/dora_nodes/rml63_dataset_recorder_dora_node.py
+    inputs:
+      tick: dora/timer/millis/33
+      state: rml63_state/state
+      tcp_pose: rml63_state/tcp_pose
+      joint_current: rml63_state/joint_current
+      joint_velocity: rml63_state/joint_velocity
+      status: rml63_state/status
+      state_timestamp: rml63_state/timestamp
+      state_valid: rml63_state/valid
+      rgb: d435i_camera/rgb
+      depth: d435i_camera/depth
+      aligned_depth: d435i_camera/aligned_depth
+      gyro: d435i_camera/gyro
+      accel: d435i_camera/accel
+      camera_timestamp: d435i_camera/camera_timestamp
+      frame_id: d435i_camera/frame_id
+      camera_valid: d435i_camera/valid
+      action: mock_action/action
+      # tool_state: （预留）绑扎枪状态源
+    outputs:
+      - status
+    env:
+      PYTHONPATH: /home/dys/rml63_robot_project/ros2_ws/src/rml63_bridge
+      RML63_DORA_DATASET_ROOT: /home/dys/rml63_robot_project/datasets/rml63_dora_stage
+      RML63_DORA_OUTPUT_ROOT: /home/dys/rml63_robot_project/datasets/rml63_dora_lerobot
+      RML63_DORA_TASK: rebar_tying
+      RML63_DORA_FPS: "30"
+      RML63_DORA_ROBOT_TYPE: rml63
+      RML63_DORA_ACTION_DIM: "6"
+      RML63_DORA_MAX_TIME_DELTA: "0.05"
+      RML63_DORA_CAMERA_STALE_TIMEOUT: "3.0"
+      RML63_DORA_CAMERA_START_TIMEOUT: "30.0"
+      RML63_DORA_REQUIRE_ACTION: "true"
+      RML63_DORA_CONTROL_FILE: /home/dys/rml63_robot_project/datasets/rml63_dora_record.ctl
+      RML63_DORA_CAMERA_NAMES: d435i
+      RML63_DORA_CAMERA_SHAPES: '[{"name": "d435i", "height": 480, "width": 640}]'

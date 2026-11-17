@@ -1,0 +1,73 @@
+{
+  "tool": "rml63_hololens_receiver",
+  "schema_expected": "rml63.hand_pose.v1",
+  "quaternion_norm_tolerance": 0.001,
+  "run": {
+    "run_id": "run_20261112_101842",
+    "log_root": "/home/dys/rml63_robot_project/datasets/hololens_checks",
+    "run_dir": "/home/dys/rml63_robot_project/datasets/hololens_checks/run_20261112_101842",
+    "packets_file": "/home/dys/rml63_robot_project/datasets/hololens_checks/run_20261112_101842/packets.jsonl",
+    "summary_file": "/home/dys/rml63_robot_project/datasets/hololens_checks/run_20261112_101842/summary.json",
+    "bind_ip": "172.20.10.2",
+    "port": 5005,
+    "actual_port": 5005,
+    "peer_ip": "172.20.10.3",
+    "duration_s": 30.0,
+    "no_data_timeout_s": 5.0,
+    "start_wall_time": "2026-11-12T10:18:42.445+08:00",
+    "start_monotonic_s": 1657.561005391,
+    "end_wall_time": "2026-11-12T10:19:12.471+08:00",
+    "end_monotonic_s": 1687.58729629,
+    "end_reason": "duration_reached"
+  },
+  "packets": {
+    "total_received": 708,
+    "wrong_source": 0,
+    "malformed": 0,
+    "malformed_reasons": {},
+    "validated": 708,
+    "packets_written": 708,
+    "valid_pose": 554,
+    "invalid_pose": 154,
+    "valid_ratio": 0.7824858757062146,
+    "valid_ratio_reason": null
+  },
+  "timing": {
+    "wait_before_first_packet_s": 0.011151143999995838,
+    "wait_before_first_packet_reason": null,
+    "first_validated_wall_time": "2026-11-12T10:18:42.456+08:00",
+    "first_validated_monotonic_s": 1657.572156535,
+    "last_validated_wall_time": "2026-11-12T10:19:12.471+08:00",
+    "last_validated_monotonic_s": 1687.587054778,
+    "avg_receive_rate_hz": 23.55496907822712,
+    "avg_receive_rate_reason": null,
+    "interval_mean_s": 0.04245388718953333,
+    "interval_p95_s": 0.05436917400015773,
+    "interval_max_s": 0.18975492399999894,
+    "interval_stats_reason": null,
+    "p95_method": "nearest-rank"
+  },
+  "sessions": {
+    "4962f82808d44a2dada51de01688a3db": {
+      "packet_count": 708,
+      "valid_pose": 554,
+      "invalid_pose": 154,
+      "first_sequence": 2120,
+      "max_sequence": 2827,
+      "duplicate_packets": 0,
+      "out_of_order_packets": 0,
+      "gaps_filled_by_late_packets": 0,
+      "missing_sequence_count": 0,
+      "missing_sequences": [],
+      "missing_sequences_truncated": false
+    }
+  },
+  "notes": [
+    "missing_sequences 表示这些序号未被本次接收记录覆盖（未收到，或收到但未通过校验被剔除），不代表确证网络丢包。",
+    "发送端与接收端时钟未同步：不要用发送时间戳与接收墙钟时间之差估算单向延迟。",
+    "接收间隔均值/P95/最大值反映接收节奏，不是端到端控制延迟。",
+    "valid_ratio 基于全部通过校验的数据包计算，与每秒屏幕显示的采样无关。",
+    "平均接收频率按 (N-1)/(末包接收单调时间-首包接收单调时间) 计算，N 为通过校验的包数；从监听成功起计时，排除首包前的等待时间。",
+    "强制结束进程（如 kill -9）不保证生成最终 summary.json；请尽量用 Ctrl+C 停止。"
+  ]
+}
