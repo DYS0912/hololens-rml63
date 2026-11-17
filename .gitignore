@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# ROS2 构建产物
+build/
+install/
+log/
+
+# 数据集与日志（完整数据保留本地；仓库只收录 examples/ 与 datasets/hololens_checks/run_20261112_101842/）
+datasets/runs/
+datasets/hololens_checks/joint_speed_stationary_*.yaml
+datasets/hololens_checks/dora_replay_*/
+datasets/hololens_checks/live_preview_*/
+datasets/hololens_checks/run_20*/
+!datasets/hololens_checks/run_20261112_101842/
+!datasets/hololens_checks/run_20261112_101842/**
+
+# 归档与二进制
+*.tar.gz
+*.zip
+*.so
+*.bag
+*.db3
+*.mp4
+
+# 密钥与凭据
+*.pem
+*.key
+*.pfx
+.p12
+.env
+*.env
+
+# 编辑器
+.vscode/
+.idea/
